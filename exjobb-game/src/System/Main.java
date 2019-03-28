@@ -67,7 +67,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
     public void paint(Graphics g) {
         super.paint(g);
 
-		if (((player.getX() - cameraPan) < 460) || (player.getX() - cameraPan) > 500) {
+		if (((player.getX() - cameraPan) < 475) || (player.getX() - cameraPan) > 485) {
 			cameraPan += 0.02 * (player.getX() - cameraPan - 480);
 		}
 
@@ -75,12 +75,12 @@ public class Main extends JPanel implements Runnable, KeyListener {
         g2d.setColor(new Color(150,150,255));
         g2d.fillRect(0, 0, 60*16, 60*16);
         
-        for (WorldObject i : World.getWorldList()) {
-        	g2d.drawImage(i.getImg(),(int) (i.getX()-cameraPan), i.getY(), null);
+        for (int i = 0; i < World.getWorldList().size(); i++) {
+        	g2d.drawImage(World.getWorldList().get(i).getImg(),(int) (World.getWorldList().get(i).getX()-cameraPan), World.getWorldList().get(i).getY(), null);
         }
         
-        for (AgentObject i : Agent.getAgentList()) {
-        	g2d.drawImage(i.getImg(),(int) (i.getX()-cameraPan),(int) i.getY(), null);
+        for (int i = 0; i < Agent.getAgentList().size(); i++) {
+        	g2d.drawImage(Agent.getAgentList().get(i).getImg(),(int) (Agent.getAgentList().get(i).getX()-cameraPan),(int) Agent.getAgentList().get(i).getY(), null);
         }
         
         for (int i = 0; i < player.getHealth(); i++) {
