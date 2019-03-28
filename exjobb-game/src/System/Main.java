@@ -24,6 +24,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private Player player;
     private Agent agent;
     private int coinCount = 0;
+    private double cameraPan = 0;
     
     // Creates all the necessary objects for the Game
     public Main() {
@@ -65,16 +66,21 @@ public class Main extends JPanel implements Runnable, KeyListener {
     // Prints the graphics to the JPane
     public void paint(Graphics g) {
         super.paint(g);
+
+		if (((player.getX() - cameraPan) < 460) || (player.getX() - cameraPan) > 500) {
+			cameraPan += 0.02 * (player.getX() - cameraPan - 480);
+		}
+
         g2d = (Graphics2D) g;
         g2d.setColor(new Color(150,150,255));
         g2d.fillRect(0, 0, 60*16, 60*16);
         
         for (WorldObject i : World.getWorldList()) {
-        	g2d.drawImage(i.getImg(), i.getX(), i.getY(), null);
+        	g2d.drawImage(i.getImg(),(int) (i.getX()-cameraPan), i.getY(), null);
         }
         
         for (AgentObject i : Agent.getAgentList()) {
-        	g2d.drawImage(i.getImg(),(int) i.getX(),(int) i.getY(), null);
+        	g2d.drawImage(i.getImg(),(int) (i.getX()-cameraPan),(int) i.getY(), null);
         }
         
         for (int i = 0; i < player.getHealth(); i++) {
@@ -99,7 +105,9 @@ public class Main extends JPanel implements Runnable, KeyListener {
         	g2d.drawString("Press ESC to exit", 100, 150);  
         }
         
-        g2d.drawImage(player.getImg(),(int) player.getX(),(int) player.getY(), null);
+        g2d.drawImage(player.getImg(),(int) (player.getX()-cameraPan),(int) player.getY(), null);
+
+
         
     }
     
@@ -149,9 +157,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
 		if (e.getKeyCode() == 27) {
 			System.exit(0);
 		}
-		
-		
-		
+
+
 	}
 
 	// Sets the players booleans to false if the key is released
