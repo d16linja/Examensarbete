@@ -25,7 +25,7 @@ public class Agent {
 	//	BufferedReader bReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/res/world.txt")));
 
 
-		aFactory.getAgentObject('p', 30, 30);
+		aFactory.getAgentObject('P', 30, 30);
 /*		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 60; x++) {
 				try {

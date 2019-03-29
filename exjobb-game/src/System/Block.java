@@ -2,6 +2,7 @@ package System;
 
 import Agents.AgentFactory;
 import Agents.AgentObject;
+import Agents.Player;
 import World.Grass;
 import World.WorldFactory;
 import World.WorldObject;
@@ -10,15 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Block {
-    static List<Block> blockList = new ArrayList<Block>();
+    private static List<Block> blockList = new ArrayList<Block>();
     static int gameBlockPosition;
     private List<WorldObject> worldList = new ArrayList<WorldObject>();
     private List<AgentObject> agentList = new ArrayList<AgentObject>();
 
+    public Block() {
+        generateBlock();
+    }
 
-    public void generateBlock() {
+
+    private void generateBlock() {
         worldList = generateWorld();
         agentList = generateAgents(worldList);
+        agentList.add(new Player(30, 30));
         blockList.add(this);
     }
 
@@ -28,12 +34,12 @@ public class Block {
 
         for (int i = 0; i < 60 ; i++) {
             if (Math.random() > 0.3) {
-                list.add(wf.getWorldObject('g', 60, i));
+                list.add(wf.getWorldObject('g', i, 59));
             } else {
-                list.add(wf.getWorldObject('s', 60, i));
+                list.add(wf.getWorldObject('s', i, 59));
                 int k = 1;
-                for (double j = Math.random(); j > 0.5; j = Math.random()) {
-                    list.add(wf.getWorldObject('s', 60-k, i));
+                for (double j = Math.random(); j > 0.5 && k < 5; j = Math.random()) {
+                    list.add(wf.getWorldObject('s', i, 59-k));
                     k++;
                 }
             }
@@ -49,7 +55,8 @@ public class Block {
         for (int i = 0; i < worldList.size(); i++){
             if (worldList.get(i).getClass() == Grass.class) {
                 if (Math.random() < 0.2) {
-                    list.add(af.getAgentObject('R', worldList.get(i).getX() / 16, worldList.get(i).getX() / 16 + 1));
+                    list.add(af.getAgentObject('R', worldList.get(i).getX() / 16, worldList.get(i).getY() / 16 + 1));
+                    System.out.println("yay!");
                 }
             }
         }
@@ -65,4 +72,7 @@ public class Block {
         return this.agentList;
     }
 
+    public List<Block> getBlocks(){
+        return blockList;
+    }
 }

@@ -36,14 +36,11 @@ public class Main extends JPanel implements Runnable, KeyListener {
         
     	// Get the players spawn point and remove the object from the list of objects
         // Also count all the coins so that we can compare it to the score later
-    	for (int i = 0; i < Agent.getAgentList().size(); i++) {
-    		if (Agent.getAgentList().get(i).getClass() == player.getClass()) {
-    			player.setX(Agent.getAgentList().get(i).getX());
-    			player.setY(Agent.getAgentList().get(i).getY());   
-    			Agent.getAgentList().remove(i);
-    		}
-    		if (Agent.getAgentList().get(i).getClass() == new Coin(0,0).getClass()) {
-    			coinCount++;
+    	for (int i = 0; i < block.getAgents().size(); i++) {
+    		if (block.getAgents().get(i).getClass() == player.getClass()) {
+    			player.setX(block.getAgents().get(i).getX());
+    			player.setY(block.getAgents().get(i).getY());
+				block.getAgents().remove(i);
     		}
     	}
     }
@@ -76,35 +73,35 @@ public class Main extends JPanel implements Runnable, KeyListener {
         g2d.setColor(new Color(150,150,255));
         g2d.fillRect(0, 0, 60*16, 60*16);
         
-        for (int i = 0; i < World.getBlocks().size(); i++) {
-        	g2d.drawImage(World.getBlocks().get(i).getImg(),(int) (World.getBlocks().get(i).getX()-cameraPan), World.getBlocks().get(i).getY(), null);
+        for (int i = 0; i < block.getWorld().size(); i++) {
+        	g2d.drawImage(block.getWorld().get(i).getImg(),(int) (block.getWorld().get(i).getX()-cameraPan), block.getWorld().get(i).getY(), null);
         }
         
-        for (int i = 0; i < Agent.getAgentList().size(); i++) {
-        	g2d.drawImage(Agent.getAgentList().get(i).getImg(),(int) (Agent.getAgentList().get(i).getX()-cameraPan),(int) Agent.getAgentList().get(i).getY(), null);
+        for (int i = 0; i < block.getAgents().size(); i++) {
+        	g2d.drawImage(block.getAgents().get(i).getImg(),(int) (block.getAgents().get(i).getX()-cameraPan),(int) block.getAgents().get(i).getY(), null);
         }
         
         for (int i = 0; i < player.getHealth(); i++) {
         	g2d.drawImage(Resources.heartBig, 20+40*i,20,null);
         }
         
-        // If we win, we show a winning screen
-        if (player.getScore() == coinCount) {
-        	g2d.setColor(Color.GREEN);
-        	g2d.setFont(new Font("Monospaced", Font.BOLD, 60));
-        	g2d.drawString("You win!", 100, 100);
-        	g2d.setFont(new Font("Monospaced", Font.BOLD, 30));
-        	g2d.drawString("Press ESC to exit", 100, 150);        	
-        }
-        
-        // if we loose we remove the player from the game and show a message that we lost
-        if (player.getHealth() <= 0) {
-        	g2d.setColor(Color.RED);
-        	g2d.setFont(new Font("Monospaced", Font.BOLD, 60));
-        	g2d.drawString("You died!", 100, 100);
-        	g2d.setFont(new Font("Monospaced", Font.BOLD, 30));
-        	g2d.drawString("Press ESC to exit", 100, 150);  
-        }
+//        // If we win, we show a winning screen
+//        if (player.getScore() == coinCount) {
+//        	g2d.setColor(Color.GREEN);
+//        	g2d.setFont(new Font("Monospaced", Font.BOLD, 60));
+//        	g2d.drawString("You win!", 100, 100);
+//        	g2d.setFont(new Font("Monospaced", Font.BOLD, 30));
+//        	g2d.drawString("Press ESC to exit", 100, 150);
+//        }
+//
+//        // if we loose we remove the player from the game and show a message that we lost
+//        if (player.getHealth() <= 0) {
+//        	g2d.setColor(Color.RED);
+//        	g2d.setFont(new Font("Monospaced", Font.BOLD, 60));
+//        	g2d.drawString("You died!", 100, 100);
+//        	g2d.setFont(new Font("Monospaced", Font.BOLD, 30));
+//        	g2d.drawString("Press ESC to exit", 100, 150);
+//        }
         
         g2d.drawImage(player.getImg(),(int) (player.getX()-cameraPan),(int) player.getY(), null);
 
