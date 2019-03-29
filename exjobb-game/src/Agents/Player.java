@@ -98,7 +98,7 @@ public class Player extends AgentObject {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				if (wo.getSolid()) {
-					y=wo.getY()+wo.getSize();
+					y=wo.getY()+wo.getSize()+0.1;
 					yv=0.1;
 				}
 				break;
@@ -106,6 +106,9 @@ public class Player extends AgentObject {
 				if (wo.getSolid()) {
 					x=wo.getX()-width;
 					xv=0;
+					if (xv > 0) {
+						xv=0;
+					}
 				}
 				break;
 
@@ -120,7 +123,9 @@ public class Player extends AgentObject {
 			case 4:
 				if (wo.getSolid()) {
 					x=wo.getX() + wo.getSize();
-					xv=0;
+					if (xv < 0) {
+						xv=0;
+					}
 				}
 				break;
 			default:
