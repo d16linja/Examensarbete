@@ -4,22 +4,18 @@ public class AgentFactory {
 	
 	// If we pass a block letter to this class it creates a new object in the list
 	// At the position specified
-	public void getAgentObject(char agentChar, int x, int y) {
+	public AgentObject getAgentObject(char agentChar, int x, int y) {
 		switch (agentChar) {
 		case 'P':
-			System.out.println("Made a player!");
-			Agent.agentList.add(new Player(x, y));
-			break;
+			return new Player(x, y);
 		case 'C':
-			System.out.println("Made a coin!");
-			Agent.agentList.add(new Coin(x, y));
-			break;
+			return new Coin(x, y);
 		case 'R':
-			System.out.println("Made a cRawler!");
-			Agent.agentList.add(new Crawler(x, y));
-			break;
+			return new Crawler(x, y);
 		default:
 			break;
 		}
+		System.err.println("Something went horribly wrong while generating the agents, this is what i know: char: [" + agentChar + "] x: [" + x + "] y: [" + y + "]");
+		return null;
 	}
 }

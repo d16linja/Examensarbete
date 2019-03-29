@@ -15,12 +15,11 @@ import Agents.AgentObject;
 import Agents.Coin;
 import Agents.Player;
 import World.World;
-import World.WorldObject;
 
 
 public class Main extends JPanel implements Runnable, KeyListener {
 	private Graphics2D g2d;
-    private World world;
+    private Block block;
     private Player player;
     private Agent agent;
     private int coinCount = 0;
@@ -29,9 +28,11 @@ public class Main extends JPanel implements Runnable, KeyListener {
     // Creates all the necessary objects for the Game
     public Main() {
     	Resources.loadResources();
-        world = new World();
+        block = new Block();
         player = new Player(0, 0);
         agent = new Agent();
+
+
         
     	// Get the players spawn point and remove the object from the list of objects
         // Also count all the coins so that we can compare it to the score later
@@ -75,8 +76,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
         g2d.setColor(new Color(150,150,255));
         g2d.fillRect(0, 0, 60*16, 60*16);
         
-        for (int i = 0; i < World.getWorldList().size(); i++) {
-        	g2d.drawImage(World.getWorldList().get(i).getImg(),(int) (World.getWorldList().get(i).getX()-cameraPan), World.getWorldList().get(i).getY(), null);
+        for (int i = 0; i < World.getBlocks().size(); i++) {
+        	g2d.drawImage(World.getBlocks().get(i).getImg(),(int) (World.getBlocks().get(i).getX()-cameraPan), World.getBlocks().get(i).getY(), null);
         }
         
         for (int i = 0; i < Agent.getAgentList().size(); i++) {

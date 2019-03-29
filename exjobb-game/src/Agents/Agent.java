@@ -22,9 +22,11 @@ public class Agent {
 	// It uses the AgentFactory to do so. 
 	public Agent() {
 
-		BufferedReader bReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/res/world.txt")));
-		
-		for (int y = 0; y < 60; y++) {
+	//	BufferedReader bReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/res/world.txt")));
+
+
+		aFactory.getAgentObject('p', 30, 30);
+/*		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 60; x++) {
 				try {
 					aFactory.getAgentObject((char)bReader.read(), x, y);
@@ -32,14 +34,16 @@ public class Agent {
 					System.err.println("Error getting world data at: " + y + ", " + x);
 				}
 			}
-		}
+		}*/
 	}
 
 	public static List<AgentObject> getAgentList() {
 		return agentList;
 	}
 
-	
+	public void addAgents(int offset) {
+
+	}
 	
 
 }

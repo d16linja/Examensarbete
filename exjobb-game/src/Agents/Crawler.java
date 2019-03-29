@@ -44,7 +44,7 @@ public class Crawler extends AgentObject {
 		
 		// Handles collision with world objects so that the crawler doesn't 
 		// fall though the ground
-		for (WorldObject wo: World.getWorldList()) {
+		for (WorldObject wo: World.getBlocks()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				break;
@@ -75,7 +75,7 @@ public class Crawler extends AgentObject {
 		boolean nextTileWalkabel = false;
 		
 		// Looks at the tile at the ground in front of the crawler 
-		for (WorldObject wo: World.getWorldList()) {
+		for (WorldObject wo: World.getBlocks()) {
 			if (wCollision(x+AIview, y+16, wo) > 0) {
 				nextTileWalkabel = true;
 			}

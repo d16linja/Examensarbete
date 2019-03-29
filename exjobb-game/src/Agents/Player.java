@@ -1,7 +1,6 @@
  package Agents;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import System.Resources;
@@ -94,7 +93,7 @@ public class Player extends AgentObject {
 		y+=yv;
 
 		// Handles collision with world objects
-		for (WorldObject wo: World.getWorldList()) {
+		for (WorldObject wo: World.getBlocks()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				if (wo.getSolid()) {
