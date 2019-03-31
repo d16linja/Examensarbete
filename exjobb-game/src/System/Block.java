@@ -38,7 +38,7 @@ public class Block {
             } else {
                 list.add(wf.getWorldObject('s', i, 59));
                 int k = 1;
-                for (double j = Math.random(); j > 0.5 && k < 5; j = Math.random()) {
+                for (double j = Math.random(); j > 0.5 && k < 6; j = Math.random()) {
                     list.add(wf.getWorldObject('s', i, 59-k));
                     k++;
                 }
@@ -72,7 +72,7 @@ public class Block {
         return this.agentList;
     }
 
-    public List<Block> getBlocks(){
+    public static List<Block> getBlocks(){
         return blockList;
     }
 }

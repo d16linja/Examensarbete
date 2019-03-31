@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 
 import System.Resources;
+import System.Block;
 import World.World;
 import World.WorldObject;
 
@@ -93,7 +94,7 @@ public class Player extends AgentObject {
 		y+=yv;
 
 		// Handles collision with world objects
-		for (WorldObject wo: World.getBlocks()) {
+		for (WorldObject wo: Block.getBlocks().get(0).getWorld()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				if (wo.getSolid()) {
@@ -133,7 +134,7 @@ public class Player extends AgentObject {
 		} // End of world collision
 
 		//Since we need to be able to edit the list with objects, we can't use another for-each loop
-		for (int i = 0; i < Agent.agentList.size(); i++) {
+		for (int i = 0; i < Block.getBlocks().get(0).getAgents().size(); i++) {
 			if (aCollision(Agent.agentList.get(i))) {
 				// if we collide with a coin, get some score and remove the coin
 				if (Agent.agentList.get(i).getClass() == new Coin(0,0).getClass()) {
@@ -160,7 +161,7 @@ public class Player extends AgentObject {
 						yv=-1.5;
 						health--;
 					}
-				} 
+				}
 				//When we collide with a heart, we remove the heart and add 1 to the players health
 				else if (Agent.agentList.get(i).getClass() == new Health(0,0).getClass()) {
 					Agent.agentList.remove(i);
@@ -173,7 +174,7 @@ public class Player extends AgentObject {
 		//If the up key is held down, and the character is on the ground we can do a jump
 		//The jumped variable is used so that only 1 jump is made per press
 		if (up && !flying && !jumped) {
-			yv=-4;
+			yv=-4.2;
 			jumped = !jumped;
 		}
 		if (!up) {
