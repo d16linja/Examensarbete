@@ -29,10 +29,13 @@ public class Main extends JPanel implements Runnable, KeyListener {
     public Main() {
     	Resources.loadResources();
         block = new Block();
-        player = new Player(0, 0);
+        player = new Player(10, 10);
         agent = new Agent();
 
-
+		for (int i = 0; i < 3; i++) {
+			Block.setContext(Block.getBlocks().size());
+			block.generateNewBlock();
+		}
         
     	// Get the players spawn point and remove the object from the list of objects
         // Also count all the coins so that we can compare it to the score later
@@ -72,19 +75,20 @@ public class Main extends JPanel implements Runnable, KeyListener {
         g2d = (Graphics2D) g;
         g2d.setColor(new Color(150,150,255));
         g2d.fillRect(0, 0, 60*16, 60*16);
-        
-        for (int i = 0; i < block.getWorld().size(); i++) {
-        	g2d.drawImage(block.getWorld().get(i).getImg(),(int) (block.getWorld().get(i).getX()-cameraPan), block.getWorld().get(i).getY(), null);
-        }
-        
-        for (int i = 0; i < block.getAgents().size(); i++) {
-        	g2d.drawImage(block.getAgents().get(i).getImg(),(int) (block.getAgents().get(i).getX()-cameraPan),(int) block.getAgents().get(i).getY(), null);
-        }
-        
-        for (int i = 0; i < player.getHealth(); i++) {
-        	g2d.drawImage(Resources.heartBig, 20+40*i,20,null);
-        }
-        
+
+        if (Block.getBlocks().size() > 0) {
+			for (int i = 0; i < Block.conWorld().size(); i++) {
+				g2d.drawImage(Block.conWorld().get(i).getImg(),(int) (Block.conWorld().get(i).getX()-cameraPan), Block.conWorld().get(i).getY(), null);
+			}
+
+			for (int i = 0; i < Block.conAgents().size(); i++) {
+				g2d.drawImage(Block.conAgents().get(i).getImg(),(int) (Block.conAgents().get(i).getX()-cameraPan),(int) Block.conAgents().get(i).getY(), null);
+			}
+
+			for (int i = 0; i < player.getHealth(); i++) {
+				g2d.drawImage(Resources.heartBig, 20+40*i,20,null);
+			}
+		}
 //        // If we win, we show a winning screen
 //        if (player.getScore() == coinCount) {
 //        	g2d.setColor(Color.GREEN);
@@ -118,8 +122,16 @@ public class Main extends JPanel implements Runnable, KeyListener {
 				e.printStackTrace();
 			}
             Block.setContext((int) player.getX() / 960);
-			System.out.println(Block.getContext());
-            for (AgentObject a : Agent.getAgentList()) {
+			System.out.println(Block.conAgents().size());
+            if (Block.getContext()+5 >= Block.getBlocks().size()) {
+				Block.setContext(Block.getBlocks().size());
+				block.generateNewBlock();
+				System.out.println(Block.getContext());
+			}
+
+			Block.setContext((int) player.getX() / 960);
+
+			for (AgentObject a : Block.conAgents()) {
             	a.update();
             }
             player.update();

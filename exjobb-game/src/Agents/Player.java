@@ -94,7 +94,7 @@ public class Player extends AgentObject {
 		y+=yv;
 
 		// Handles collision with world objects
-		for (WorldObject wo: Block.getBlocks().get(0).getWorld()) {
+		for (WorldObject wo: Block.conWorld()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				if (wo.getSolid()) {
@@ -145,14 +145,14 @@ public class Player extends AgentObject {
 
 				//If we collide with a crawler while falling, remove it, there is 10% chance that a heart spawn
 				//otherwise take some damage and get some knockback
-				else if (Agent.agentList.get(i).getClass() == new Crawler(0,0).getClass()) {
+				else if (Block.conAgents().get(i).getClass() == new Crawler(0,0).getClass()) {
 					if (yv > 0) {
 						if (Math.random() < 0.1) {
-							Agent.agentList.add(new Health((int)Agent.agentList.get(i).getX()/16,(int)Agent.agentList.get(i).getY()/16));
+							Block.conAgents().add(new Health((int)Block.conAgents().get(i).getX()/16,(int)Block.conAgents().get(i).getY()/16));
 						}
-						Agent.agentList.remove(i);
+						Block.removeAgent(Block.conAgents().get(i));
 						yv = -1;
-					} else if (Agent.agentList.get(i).x + (Agent.agentList.get(i).getWidth() / 2) > x + (width / 2)){
+					} else if (Block.conAgents().get(i).x + (Block.conAgents().get(i).getWidth() / 2) > x + (width / 2)){
 						xv=-2.5;
 						yv=-1.5;
 						health--;
@@ -163,8 +163,8 @@ public class Player extends AgentObject {
 					}
 				}
 				//When we collide with a heart, we remove the heart and add 1 to the players health
-				else if (Agent.agentList.get(i).getClass() == new Health(0,0).getClass()) {
-					Agent.agentList.remove(i);
+				else if (Block.conAgents().get(i).getClass() == new Health(0,0).getClass()) {
+					Block.removeAgent(Block.conAgents().get(i));
 					health++;
 				}
 			}
