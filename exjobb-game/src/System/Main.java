@@ -10,18 +10,14 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import Agents.Agent;
 import Agents.AgentObject;
-import Agents.Coin;
 import Agents.Player;
-import World.World;
 
 
 public class Main extends JPanel implements Runnable, KeyListener {
 	private Graphics2D g2d;
     private Block block;
     private Player player;
-    private Agent agent;
     private int coinCount = 0;
     private double cameraPan = 0;
     
@@ -30,7 +26,6 @@ public class Main extends JPanel implements Runnable, KeyListener {
     	Resources.loadResources();
         block = new Block();
         player = new Player(10, 10);
-        agent = new Agent();
 
 		for (int i = 0; i < 3; i++) {
 			block.generateNewBlock();
