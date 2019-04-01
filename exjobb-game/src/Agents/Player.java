@@ -1,10 +1,10 @@
  package Agents;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 import System.Resources;
+import System.Block;
 import World.World;
 import World.WorldObject;
 
@@ -94,7 +94,7 @@ public class Player extends AgentObject {
 		y+=yv;
 
 		// Handles collision with world objects
-		for (WorldObject wo: World.getWorldList()) {
+		for (WorldObject wo: Block.conWorld()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				if (wo.getSolid()) {
@@ -134,25 +134,28 @@ public class Player extends AgentObject {
 		} // End of world collision
 
 		//Since we need to be able to edit the list with objects, we can't use another for-each loop
-		for (int i = 0; i < Agent.agentList.size(); i++) {
-			if (aCollision(Agent.agentList.get(i))) {
+		for (int i = 0; i < Block.conAgents().size(); i++) {
+			if (aCollision(Block.conAgents().get(i))) {
 				// if we collide with a coin, get some score and remove the coin
-				if (Agent.agentList.get(i).getClass() == new Coin(0,0).getClass()) {
-					Agent.agentList.remove(i);
+				if (Block.conAgents().get(i).getClass() == Coin.class) {
+					Block.removeAgent(Block.conAgents().get(i));
 					score++;
-					System.out.println(score);
 				}
 
 				//If we collide with a crawler while falling, remove it, there is 10% chance that a heart spawn
 				//otherwise take some damage and get some knockback
-				else if (Agent.agentList.get(i).getClass() == new Crawler(0,0).getClass()) {
+				else if (Block.conAgents().get(i).getClass() == Crawler.class) {
 					if (yv > 0) {
 						if (Math.random() < 0.1) {
-							Agent.agentList.add(new Health((int)Agent.agentList.get(i).getX()/16,(int)Agent.agentList.get(i).getY()/16));
+							Health h = new Health(0,0);
+							h.setX((int)Block.conAgents().get(i).getX());
+							h.setY((int)Block.conAgents().get(i).getY());
+							Block.getBlocks().get((int)Block.conAgents().get(i).getX()/960).getAgents().add(h);
 						}
-						Agent.agentList.remove(i);
-						yv = -1;
-					} else if (Agent.agentList.get(i).x + (Agent.agentList.get(i).getWidth() / 2) > x + (width / 2)){
+						Block.removeAgent(Block.conAgents().get(i));
+						yv = -1.5;
+						y-=2;
+					} else if (Block.conAgents().get(i).x + (Block.conAgents().get(i).getWidth() / 2) > x + (width / 2)){
 						xv=-2.5;
 						yv=-1.5;
 						health--;
@@ -161,10 +164,10 @@ public class Player extends AgentObject {
 						yv=-1.5;
 						health--;
 					}
-				} 
+				}
 				//When we collide with a heart, we remove the heart and add 1 to the players health
-				else if (Agent.agentList.get(i).getClass() == new Health(0,0).getClass()) {
-					Agent.agentList.remove(i);
+				else if (Block.conAgents().get(i).getClass() == Health.class) {
+					Block.removeAgent(Block.conAgents().get(i));
 					health++;
 				}
 			}
@@ -174,7 +177,7 @@ public class Player extends AgentObject {
 		//If the up key is held down, and the character is on the ground we can do a jump
 		//The jumped variable is used so that only 1 jump is made per press
 		if (up && !flying && !jumped) {
-			yv=-4;
+			yv=-4.2;
 			jumped = !jumped;
 		}
 		if (!up) {

@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 
 import System.Resources;
+import System.Block;
 import World.World;
 import World.WorldObject;
 
@@ -44,7 +45,7 @@ public class Crawler extends AgentObject {
 		
 		// Handles collision with world objects so that the crawler doesn't 
 		// fall though the ground
-		for (WorldObject wo: World.getWorldList()) {
+		for (WorldObject wo: Block.conWorld()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				break;
@@ -75,7 +76,7 @@ public class Crawler extends AgentObject {
 		boolean nextTileWalkabel = false;
 		
 		// Looks at the tile at the ground in front of the crawler 
-		for (WorldObject wo: World.getWorldList()) {
+		for (WorldObject wo: Block.conWorld()) {
 			if (wCollision(x+AIview, y+16, wo) > 0) {
 				nextTileWalkabel = true;
 			}
