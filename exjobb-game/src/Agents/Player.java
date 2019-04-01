@@ -17,6 +17,8 @@ public class Player extends AgentObject {
 	private boolean use = false;
 	private boolean flying = true;
 	private boolean jumped = false;
+	private boolean kicked = false;
+	private int kickTimer = 0;
 	private int score;
 	private int health;
 	private int spriteY = 0;
@@ -76,11 +78,36 @@ public class Player extends AgentObject {
 	public void update() {
 		flying = true;
 		//If we are not at the max speed, we can add more speed
-		if (right && xv < 2) {
+		if (right) {
 			xv+=0.1;
 		}		
-		if (left && xv > -2) {
+		if (left) {
 			xv-=0.1;
+		}
+		if (xv > 2 || xv < -2) {
+			xv*=0.95;
+		}
+
+		if (kickTimer > 0) {
+			kickTimer++;
+			kicked = true;
+			if (kickTimer > 50) {
+				kickTimer = 0;
+			}
+		}
+
+		if (use && !kicked) {
+			kicked = true;
+			kickTimer++;
+			yv=-2;
+			if (left || spriteX == -32) {
+				xv-=3;
+				if (xv < -3) xv = -3;
+			}
+			if (right || spriteX == 0) {
+				xv += 3;
+				if (xv > 3) xv = 3;
+			}
 		}
 
 		// There is some resistance so that we stop if we dont add more speed
@@ -149,7 +176,7 @@ public class Player extends AgentObject {
 				//If we collide with a crawler while falling, remove it, there is 10% chance that a heart spawn
 				//otherwise take some damage and get some knockback
 				else if (Block.conAgents().get(i).getClass() == Crawler.class) {
-					if (yv > 0) {
+					if (yv > 0 || kickTimer > 0) {
 						if (Math.random() < 0.1) {
 							Health h = new Health(0,0);
 							h.setX((int)Block.conAgents().get(i).getX());
@@ -183,9 +210,14 @@ public class Player extends AgentObject {
 		if (up && !flying && !jumped) {
 			yv=-4.2;
 			jumped = !jumped;
+			kickTimer = 0;
 		}
 		if (!up) {
 			jumped = false;
+		}
+
+		if (!use) {
+			kicked = false;
 		}
 
 
@@ -228,7 +260,11 @@ public class Player extends AgentObject {
 
 		if (flying) {
 			spriteY= -64;
-			animationFrame = 0;
+			if (kickTimer > 0) {
+				animationFrame = -16;
+			} else {
+				animationFrame = 0;
+			}
 		}
 		setImage((Graphics2D) super.img.getGraphics());
 	}

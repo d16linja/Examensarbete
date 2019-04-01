@@ -139,6 +139,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 	// Sets the players booleans to true if the correct key is pressed
 	@Override
 	public void keyPressed(KeyEvent e) {
+
 		
 		if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
 			player.setLeft(true);
@@ -156,8 +157,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
 			player.setDown(true);
 		}
 		
-		if (e.getKeyCode() == 32) {
-			player.setDown(true);
+		if (e.getKeyCode() == 32 || e.getKeyCode() == 69) {
+			player.setUse(true);
 		}
 		
 		if (e.getKeyCode() == 27) {
@@ -186,9 +187,9 @@ public class Main extends JPanel implements Runnable, KeyListener {
 		if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
 			player.setDown(false);
 		}
-		
-		if (e.getKeyCode() == 32) {
-			player.setDown(false);
+
+		if (e.getKeyCode() == 32 || e.getKeyCode() == 69) {
+			player.setUse(false);
 		}
 		
 	}
