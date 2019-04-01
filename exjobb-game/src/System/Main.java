@@ -33,7 +33,6 @@ public class Main extends JPanel implements Runnable, KeyListener {
         agent = new Agent();
 
 		for (int i = 0; i < 3; i++) {
-			Block.setContext(Block.getBlocks().size());
 			block.generateNewBlock();
 		}
         
@@ -122,14 +121,9 @@ public class Main extends JPanel implements Runnable, KeyListener {
 				e.printStackTrace();
 			}
             Block.setContext((int) player.getX() / 960);
-			System.out.println(Block.conAgents().size());
-            if (Block.getContext()+5 >= Block.getBlocks().size()) {
-				Block.setContext(Block.getBlocks().size());
+            if (Block.getContext()+4 >= Block.getBlocks().size()) {
 				block.generateNewBlock();
-				System.out.println(Block.getContext());
 			}
-
-			Block.setContext((int) player.getX() / 960);
 
 			for (AgentObject a : Block.conAgents()) {
             	a.update();

@@ -18,7 +18,6 @@ public class Crawler extends AgentObject {
 	public Crawler(int x, int y) {
 		super(x, y, 16, 16);
 		xv=speed;
-		System.out.println("I exist!");
 	}
 
 	@Override

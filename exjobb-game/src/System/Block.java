@@ -4,7 +4,7 @@ import Agents.AgentFactory;
 import Agents.AgentObject;
 import Agents.Player;
 import World.Grass;
-import World.World;
+import World.Stone;
 import World.WorldFactory;
 import World.WorldObject;
 
@@ -15,6 +15,11 @@ public class Block {
     private static List<Block> blockList = new ArrayList<Block>();
     static int gameBlockPosition;
     private List<WorldObject> worldList = new ArrayList<WorldObject>();
+
+    public void setAgentList(List<AgentObject> agentList) {
+        this.agentList = agentList;
+    }
+
     private List<AgentObject> agentList = new ArrayList<AgentObject>();
     private static int context = 0;
 
@@ -50,12 +55,24 @@ public class Block {
     private List<AgentObject> generateAgents(List<WorldObject> worldList) {
         List<AgentObject> list = new ArrayList<AgentObject>();
         AgentFactory af = new AgentFactory();
+        boolean emptyAbove;
 
         for (int i = 0; i < worldList.size(); i++){
             if (worldList.get(i).getClass() == Grass.class) {
                 if (Math.random() < 0.2) {
-                    list.add(af.getAgentObject('R', worldList.get(i).getX() / 16, worldList.get(i).getY() / 16 - 1));
-                    System.out.println("yay!");
+                    list.add(af.getAgentObject('R', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
+                }
+            } else if (worldList.get(i).getClass() == Stone.class) {
+                emptyAbove = true;
+                for (int j = 0; j < worldList.size(); j++) {
+                    if (worldList.get(i).getX() == worldList.get(j).getX() && worldList.get(i).getY() == worldList.get(j).getY()+16) {
+                        emptyAbove = false;
+                        break;
+                    }
+                }
+
+                if (emptyAbove) {
+                    list.add(af.getAgentObject('C', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 4));
                 }
             }
         }
@@ -73,24 +90,21 @@ public class Block {
 
     public static List<AgentObject> conAgents(){
         List<AgentObject> tempList = new ArrayList<>();
-        if (context == 0 || context-1 < 0) {
-            tempList.addAll(blockList.get(context).getAgents());
-        } else {
-            for (int i = -1; i <= 1; i++){
-                tempList.addAll(blockList.get(context+i).getAgents());
-            }
+        for (int i = context-1; i <= context+1; i++) {
+            if (i < 0 ) continue;
+            if (i >= Block.getBlocks().size()) break;
+            tempList.addAll(Block.getBlocks().get(i).getAgents());
         }
+
         return tempList;
     }
 
     public static List<WorldObject> conWorld(){
         List<WorldObject> tempList = new ArrayList<>();
-        if (context == 0 || context-1 < 0 ) {
-            tempList.addAll(blockList.get(context).getWorld());
-        } else {
-            for (int i = -1; i <= 1; i++){
-                tempList.addAll(blockList.get(context+i).getWorld());
-            }
+        for (int i = context-1; i <= context+1; i++) {
+            if (i < 0 ) continue;
+            if (i >= Block.getBlocks().size()) break;
+            tempList.addAll(Block.getBlocks().get(i).getWorld());
         }
 
         return tempList;
