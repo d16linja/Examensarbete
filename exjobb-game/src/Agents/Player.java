@@ -134,11 +134,11 @@ public class Player extends AgentObject {
 		} // End of world collision
 
 		//Since we need to be able to edit the list with objects, we can't use another for-each loop
-		for (int i = 0; i < Block.getBlocks().get(0).getAgents().size(); i++) {
-			if (aCollision(Agent.agentList.get(i))) {
+		for (int i = 0; i < Block.conAgents().size(); i++) {
+			if (aCollision(Block.conAgents().get(i))) {
 				// if we collide with a coin, get some score and remove the coin
-				if (Agent.agentList.get(i).getClass() == new Coin(0,0).getClass()) {
-					Agent.agentList.remove(i);
+				if (Block.conAgents().get(i).getClass() == new Coin(0,0).getClass()) {
+					Block.conAgents().remove(i);
 					score++;
 					System.out.println(score);
 				}

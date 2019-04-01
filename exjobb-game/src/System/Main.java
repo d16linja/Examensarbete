@@ -117,6 +117,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+            Block.setContext((int) player.getX() / 960);
+			System.out.println(Block.getContext());
             for (AgentObject a : Agent.getAgentList()) {
             	a.update();
             }
