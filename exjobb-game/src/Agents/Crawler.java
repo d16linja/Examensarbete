@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 
 import System.Resources;
 import System.Block;
-import World.World;
 import World.WorldObject;
 
 public class Crawler extends AgentObject {
