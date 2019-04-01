@@ -50,4 +50,7 @@ public abstract class WorldObject {
 	public BufferedImage getImg() {
 		return img;
 	}
+
+	abstract public void update();
+
 }

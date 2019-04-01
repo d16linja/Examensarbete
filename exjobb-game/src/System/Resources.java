@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 // A static class that holds all the resources used in the game
 
 public class Resources {
-	static public BufferedImage player, heartBig, heartSmall, crawler, coin;
+	static public BufferedImage player, heartBig, heartSmall, crawler, coin, grass, stone;
 
 	static void loadResources() {
 		try {
@@ -16,6 +16,9 @@ public class Resources {
 			heartSmall = ImageIO.read(ClassLoader.getSystemResource("res/heartSmall.png"));
 			crawler = ImageIO.read(ClassLoader.getSystemResource("res/crawler.png"));
 			coin = ImageIO.read(ClassLoader.getSystemResource("res/coin.png"));
+			grass = ImageIO.read(ClassLoader.getSystemResource("res/grass.png"));
+			stone = ImageIO.read(ClassLoader.getSystemResource("res/stone.png"));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 

@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import Agents.AgentObject;
 import Agents.Player;
+import World.WorldObject;
 
 
 public class Main extends JPanel implements Runnable, KeyListener {
@@ -118,6 +119,10 @@ public class Main extends JPanel implements Runnable, KeyListener {
             Block.setContext((int) player.getX() / 960);
             if (Block.getContext()+4 >= Block.getBlocks().size()) {
 				block.generateNewBlock();
+			}
+
+            for (WorldObject w : Block.conWorld()) {
+            	w.update();
 			}
 
 			for (AgentObject a : Block.conAgents()) {

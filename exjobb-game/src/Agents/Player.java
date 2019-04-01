@@ -17,7 +17,8 @@ public class Player extends AgentObject {
 	private boolean use = false;
 	private boolean flying = true;
 	private boolean jumped = false;
-	private int score,health;
+	private int score;
+	private int health;
 	private int spriteY = 0;
 	private int spriteX = 0;
 	private int spriteCounter = 0;
@@ -56,6 +57,10 @@ public class Player extends AgentObject {
 
 	public int getHealth() {
 		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 
 	// Sets the image of the object

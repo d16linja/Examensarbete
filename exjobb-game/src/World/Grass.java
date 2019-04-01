@@ -1,7 +1,7 @@
 package World;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
+import System.Resources;
 
 public class Grass extends WorldObject {
 
@@ -11,13 +11,18 @@ public class Grass extends WorldObject {
 	
 	// Sets the image
 	protected void setImage(Graphics2D img) {
-		img.setColor(new Color(0,50,0));
-		img.fillRect(0, 0, size, size);
+		img.setComposite(AlphaComposite.Src);
+		img.drawImage(Resources.grass,((int) (Math.random()*4))*-16, ((int) (Math.random()*2))*-16, null);
 	}
 	
 	// Makes the object solid
 	protected boolean setSolid() {
 		return true;
+	}
+
+	@Override
+	public void update() {
+
 	}
 
 }

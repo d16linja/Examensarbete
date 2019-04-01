@@ -1,7 +1,8 @@
 package World;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
+
+import System.Resources;
 
 public class Stone extends WorldObject {
 
@@ -12,17 +13,19 @@ public class Stone extends WorldObject {
 	// Sets the image for the object
 	@Override
 	protected void setImage(Graphics2D img) {
-		img.setColor(new Color(100,100,100));
-		img.fillRect(0, 0, size, size);
-		img.setColor(new Color(50,50,50));
-		img.drawRect(0, 0, size, size);
-		img.drawRect(1, 1, size-2, size-2);
+		img.setComposite(AlphaComposite.Src);
+		img.drawImage(Resources.stone,((int) (Math.random()*4))*-16, ((int) (Math.random()*2))*-16, null);
 	}
 	
 	// Makes the object solid
 	@Override
 	protected boolean setSolid() {
 		return true;
+	}
+
+	@Override
+	public void update() {
+
 	}
 
 }
