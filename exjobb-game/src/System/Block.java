@@ -38,12 +38,12 @@ public class Block {
 
         for (int i = 0; i < 60 ; i++) {
             if (Math.random() > 0.3) {
-                list.add(wf.getWorldObject('g', i, 59));
+                list.add(wf.getWorldObject('g', i, 39));
             } else {
-                list.add(wf.getWorldObject('s', i, 59));
+                list.add(wf.getWorldObject('s', i, 39));
                 int k = 1;
                 for (double j = Math.random(); j > 0.5 && k < 6; j = Math.random()) {
-                    list.add(wf.getWorldObject('s', i, 59-k));
+                    list.add(wf.getWorldObject('s', i, 39-k));
                     k++;
                 }
             }

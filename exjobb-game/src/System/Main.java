@@ -46,7 +46,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("Sample Frame");
         Main main = new Main();
-        main.setPreferredSize(new Dimension(60*16,60*16));
+        main.setPreferredSize(new Dimension(60*16,40*16));
         frame.setContentPane(main);
         frame.pack();
         frame.setVisible(true);
