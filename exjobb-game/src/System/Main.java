@@ -21,10 +21,12 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private Player player;
     private int coinCount = 0;
     private double cameraPan = 0;
+    private Randomizer randomizer;
     
     // Creates all the necessary objects for the Game
     public Main() {
     	Resources.loadResources();
+    	randomizer = new Randomizer(Randomizer.State.NORMAL);
         block = new Block();
         player = new Player(10, 10);
 
@@ -131,6 +133,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
             player.update();
             if(player.getHealth()<=0) {
             	player.setX(-100);
+            	player.setHealth(100);
+				System.out.println(Randomizer.getData());
             }
             repaint();
         }		

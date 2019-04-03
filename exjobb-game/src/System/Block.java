@@ -8,6 +8,8 @@ import World.Stone;
 import World.WorldFactory;
 import World.WorldObject;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +39,12 @@ public class Block {
         WorldFactory wf = new WorldFactory();
 
         for (int i = 0; i < 60 ; i++) {
-            if (Math.random() > 0.3) {
+            if (Randomizer.get() > 0.3) {
                 list.add(wf.getWorldObject('g', i, 39));
             } else {
                 list.add(wf.getWorldObject('s', i, 39));
                 int k = 1;
-                for (double j = Math.random(); j > 0.5 && k < 6; j = Math.random()) {
+                for (double j = Randomizer.get(); j > 0.5 && k < 6; j = Randomizer.get()) {
                     list.add(wf.getWorldObject('s', i, 39-k));
                     k++;
                 }
@@ -59,7 +61,7 @@ public class Block {
 
         for (int i = 0; i < worldList.size(); i++){
             if (worldList.get(i).getClass() == Grass.class) {
-                if (Math.random() < 0.2) {
+                if (Randomizer.get() < 0.2) {
                     list.add(af.getAgentObject('R', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
                 }
             } else if (worldList.get(i).getClass() == Stone.class) {
@@ -129,8 +131,14 @@ public class Block {
     }
 
     public void generateNewBlock(){
+        Randomizer.clearData();
+        long startTime = System.nanoTime();
         List <WorldObject> world = generateWorld();
         List <AgentObject> agents = generateAgents(world);
         new Block(world, agents);
+        long endTime = System.nanoTime();
+        System.out.println("Time: " + (startTime-endTime));
+        System.out.println("Data: " + Randomizer.getData());
+        System.out.println("Size: " + Randomizer.getData().size());
     }
 }
