@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,13 +23,15 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private int coinCount = 0;
     private double cameraPan = 0;
     private Randomizer randomizer;
+    private long startTime;
     
     // Creates all the necessary objects for the Game
     public Main() {
     	Resources.loadResources();
-    	randomizer = new Randomizer(Randomizer.State.NORMAL);
+    	randomizer = new Randomizer(Randomizer.State.CRYPTO);
         block = new Block();
         player = new Player(10, 10);
+		startTime = System.currentTimeMillis();
 
 		for (int i = 0; i < 3; i++) {
 			block.generateNewBlock();
@@ -47,6 +50,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
     // Creates the window, keylistener and starts a thread
     public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("Sample Frame");
+
         Main main = new Main();
         main.setPreferredSize(new Dimension(60*16,40*16));
         frame.setContentPane(main);
@@ -109,17 +113,31 @@ public class Main extends JPanel implements Runnable, KeyListener {
 
         
     }
+
+    public void restart(){
+    	if (Randomizer.getState() == Randomizer.State.NORMAL) {
+    		System.exit(0);
+		}
+		Randomizer.changeState();
+		Block.resetBlocks();
+		player = new Player(10, 10);
+	}
     
     // Runs the game loop
 	public void run() {
+
         while (true) {
-            try {
+			if (System.currentTimeMillis() > startTime + 20000) {
+				restart();
+				startTime = System.currentTimeMillis();
+			}
+        	try {
 				Thread.sleep(7);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
             Block.setContext((int) player.getX() / 960);
-            if (Block.getContext()+4 >= Block.getBlocks().size()) {
+            while (Block.getContext()+4 >= Block.getBlocks().size()) {
 				block.generateNewBlock();
 			}
 
@@ -134,7 +152,6 @@ public class Main extends JPanel implements Runnable, KeyListener {
             if(player.getHealth()<=0) {
             	player.setX(-100);
             	player.setHealth(100);
-				System.out.println(Randomizer.getData());
             }
             repaint();
         }		

@@ -42,10 +42,22 @@ public class Randomizer {
         }
     }
 
+    public static void changeState(){
+        if (state == State.CRYPTO) {
+            setState(State.NORMAL);
+        } else {
+            setState(State.CRYPTO);
+        }
+    }
+
     public static double get(){
         double nr = random.nextDouble();
         data.add(nr);
         return nr;
+    }
+
+    public static State getState(){
+        return Randomizer.state;
     }
 
     public static List<Double> getData(){

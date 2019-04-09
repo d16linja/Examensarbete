@@ -12,18 +12,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Block {
     private static List<Block> blockList = new ArrayList<Block>();
     static int gameBlockPosition;
     private List<WorldObject> worldList = new ArrayList<WorldObject>();
+    private List<AgentObject> agentList = new ArrayList<AgentObject>();
+    private static int context = 0;
+    private static DataHandeler dataHandeler = new DataHandeler();
 
     public void setAgentList(List<AgentObject> agentList) {
         this.agentList = agentList;
     }
-
-    private List<AgentObject> agentList = new ArrayList<AgentObject>();
-    private static int context = 0;
 
     public Block() {
     }
@@ -137,8 +138,10 @@ public class Block {
         List <AgentObject> agents = generateAgents(world);
         new Block(world, agents);
         long endTime = System.nanoTime();
-        System.out.println("Time: " + (startTime-endTime));
-        System.out.println("Data: " + Randomizer.getData());
-        System.out.println("Size: " + Randomizer.getData().size());
+        dataHandeler.writeData(blockList.size()-1, Randomizer.getState(), Randomizer.getData(), endTime-startTime);
+    }
+
+    public static void resetBlocks(){
+        blockList = new ArrayList<Block>();
     }
 }
