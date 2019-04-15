@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Random;
+
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,8 +23,9 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private int coinCount = 0;
     private double cameraPan = 0;
     private Randomizer randomizer;
-    private long startTime;
-    
+    private long testRuntime = 30000;
+    private long startTime, stopTime, timeLeft;
+
     // Creates all the necessary objects for the Game
     public Main() {
     	Resources.loadResources();
@@ -32,6 +33,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
         block = new Block();
         player = new Player(10, 10);
 		startTime = System.currentTimeMillis();
+		stopTime = startTime + testRuntime;
+		timeLeft = stopTime - System.currentTimeMillis();
 
 		for (int i = 0; i < 3; i++) {
 			block.generateNewBlock();
@@ -127,7 +130,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 	public void run() {
 
         while (true) {
-			if (System.currentTimeMillis() > startTime + 20000) {
+			if (System.currentTimeMillis() > startTime + 30000) {
 				restart();
 				startTime = System.currentTimeMillis();
 			}
