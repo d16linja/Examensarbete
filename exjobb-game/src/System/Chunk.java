@@ -2,44 +2,79 @@ package System;
 
 import Agents.AgentFactory;
 import Agents.AgentObject;
-import Agents.Player;
 import World.Grass;
 import World.Stone;
 import World.WorldFactory;
 import World.WorldObject;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class Block {
-    private static List<Block> blockList = new ArrayList<Block>();
+public class Chunk {
+    private static List<Chunk> chunkList = new ArrayList<Chunk>();
     static int gameBlockPosition;
     private List<WorldObject> worldList = new ArrayList<WorldObject>();
     private List<AgentObject> agentList = new ArrayList<AgentObject>();
     private static int context = 0;
-    private static DataHandeler dataHandeler = new DataHandeler();
-
+    final private static DataHandeler dataHandeler = new DataHandeler();
+    private Randomizer randomizer;
+    WorldFactory wf = new WorldFactory();
+    AgentFactory af = new AgentFactory();
     public void setAgentList(List<AgentObject> agentList) {
         this.agentList = agentList;
     }
 
-    public Block() {
+    public Chunk() {
+
+        if (dataHandeler.getRuntime()%2 == 0){
+            randomizer = new Randomizer(Randomizer.State.CRYPTO);
+        }
+        else {
+            randomizer = new Randomizer(Randomizer.State.NORMAL);
+        }
     }
 
-    public Block(List<WorldObject> wo, List<AgentObject> ao) {
+    public Chunk(List<WorldObject> wo, List<AgentObject> ao) {
         this.worldList = wo;
         this.agentList = ao;
-        blockList.add(this);
+        chunkList.add(this);
+    }
+
+    public void addRespawnToChunk(int chunk){
+        for (int i = 9; i <= 11; i++) {
+            chunkList.get(chunk).worldList.add(wf.getWorldObject('s', i, 25));
+            chunkList.get(chunk).worldList.get(chunkList.get(chunk).worldList.size()-1).setX(i*16 + chunk * 960);
+        }
     }
 
     private List<WorldObject> generateWorld() {
         List<WorldObject> list = new ArrayList<WorldObject>();
-        WorldFactory wf = new WorldFactory();
+
+        boolean makeHole = false, holePossible = true;
+
+        if (chunkList.size() == 0) {
+            for (int i = 9; i <= 11; i++) {
+                list.add(wf.getWorldObject('s', i, 25));
+            }
+            for (int i = 0; i < 40; i++) {
+                list.add(wf.getWorldObject('s', 0, i));
+            }
+        }
 
         for (int i = 0; i < 60 ; i++) {
+            if (chunkList.size() == 0 && i == 0) continue;
+
+            if ((Randomizer.get() > 0.95 || makeHole) && holePossible) {
+                if (makeHole) {
+                    makeHole = false;
+                    holePossible = false;
+                    continue;
+                } else {
+                    makeHole = true;
+                    continue;
+                }
+            }
+
             if (Randomizer.get() > 0.3) {
                 list.add(wf.getWorldObject('g', i, 39));
             } else {
@@ -50,6 +85,8 @@ public class Block {
                     k++;
                 }
             }
+
+            holePossible = true;
         }
 
         return list;
@@ -57,13 +94,12 @@ public class Block {
 
     private List<AgentObject> generateAgents(List<WorldObject> worldList) {
         List<AgentObject> list = new ArrayList<AgentObject>();
-        AgentFactory af = new AgentFactory();
         boolean emptyAbove;
 
         for (int i = 0; i < worldList.size(); i++){
             if (worldList.get(i).getClass() == Grass.class) {
-                if (Randomizer.get() < 0.2) {
-                    list.add(af.getAgentObject('R', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
+                if (Randomizer.get() < 0.1) {
+                    list.add(af.getAgentObject('R', (worldList.get(i).getX()- chunkList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
                 }
             } else if (worldList.get(i).getClass() == Stone.class) {
                 emptyAbove = true;
@@ -74,8 +110,8 @@ public class Block {
                     }
                 }
 
-                if (emptyAbove) {
-                    list.add(af.getAgentObject('C', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 4));
+                if (emptyAbove && Randomizer.get() < 0.5) {
+                    list.add(af.getAgentObject('C', (worldList.get(i).getX()- chunkList.size()*960) / 16, worldList.get(i).getY() / 16 - 4));
                 }
             }
         }
@@ -95,8 +131,8 @@ public class Block {
         List<AgentObject> tempList = new ArrayList<>();
         for (int i = context-1; i <= context+1; i++) {
             if (i < 0 ) continue;
-            if (i >= Block.getBlocks().size()) break;
-            tempList.addAll(Block.getBlocks().get(i).getAgents());
+            if (i >= Chunk.getChunks().size()) break;
+            tempList.addAll(Chunk.getChunks().get(i).getAgents());
         }
 
         return tempList;
@@ -106,15 +142,15 @@ public class Block {
         List<WorldObject> tempList = new ArrayList<>();
         for (int i = context-1; i <= context+1; i++) {
             if (i < 0 ) continue;
-            if (i >= Block.getBlocks().size()) break;
-            tempList.addAll(Block.getBlocks().get(i).getWorld());
+            if (i >= Chunk.getChunks().size()) break;
+            tempList.addAll(Chunk.getChunks().get(i).getWorld());
         }
 
         return tempList;
     }
 
-    public static List<Block> getBlocks(){
-        return blockList;
+    public static List<Chunk> getChunks(){
+        return chunkList;
     }
 
     public static int getContext() {
@@ -122,26 +158,26 @@ public class Block {
     }
 
     public static void setContext(int context) {
-        Block.context = context;
+        Chunk.context = context;
     }
 
     public static void removeAgent(AgentObject ao) {
-        for (int i = 0; i < Block.getBlocks().size(); i++) {
-            if (Block.getBlocks().get(i).getAgents().remove(ao)) return;
+        for (int i = 0; i < Chunk.getChunks().size(); i++) {
+            if (Chunk.getChunks().get(i).getAgents().remove(ao)) return;
         }
     }
 
-    public void generateNewBlock(){
+    public void generateNewChunk(){
         Randomizer.clearData();
         long startTime = System.nanoTime();
         List <WorldObject> world = generateWorld();
         List <AgentObject> agents = generateAgents(world);
-        new Block(world, agents);
+        new Chunk(world, agents);
         long endTime = System.nanoTime();
-        dataHandeler.writeData(blockList.size()-1, Randomizer.getState(), Randomizer.getData(), endTime-startTime);
+        dataHandeler.writeData(chunkList.size()-1, Randomizer.getState(), Randomizer.getData(), endTime-startTime);
     }
 
-    public static void resetBlocks(){
-        blockList = new ArrayList<Block>();
+    public static void resetChunks(){
+        chunkList = new ArrayList<Chunk>();
     }
 }

@@ -16,10 +16,9 @@ public class Randomizer {
 
     public Randomizer (State state) {
         setState(state);
-        setState(State.CRYPTO);
     }
 
-    public static void setState(State state){
+    private static void setState(State state){
         Randomizer.state = state;
         switch (Randomizer.state) {
             case NORMAL:

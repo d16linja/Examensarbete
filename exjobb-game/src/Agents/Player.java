@@ -4,7 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 
 import System.Resources;
-import System.Block;
+import System.Chunk;
 import World.WorldObject;
 
 public class Player extends AgentObject {
@@ -29,7 +29,7 @@ public class Player extends AgentObject {
 
 	public Player(int x, int y) {
 		super(x, y-1, 32, 16);
-		health = 10;
+		health = 5;
 	}
 
 	// Getters and setters for methods unique for the player class
@@ -125,7 +125,7 @@ public class Player extends AgentObject {
 		y+=yv;
 
 		// Handles collision with world objects
-		for (WorldObject wo: Block.conWorld()) {
+		for (WorldObject wo: Chunk.conWorld()) {
 			switch (wCollision(x, y, wo)) {
 			case 1:
 				if (wo.getSolid()) {
@@ -165,28 +165,28 @@ public class Player extends AgentObject {
 		} // End of world collision
 
 		//Since we need to be able to edit the list with objects, we can't use another for-each loop
-		for (int i = 0; i < Block.conAgents().size(); i++) {
-			if (aCollision(Block.conAgents().get(i))) {
+		for (int i = 0; i < Chunk.conAgents().size(); i++) {
+			if (aCollision(Chunk.conAgents().get(i))) {
 				// if we collide with a coin, get some score and remove the coin
-				if (Block.conAgents().get(i).getClass() == Coin.class) {
-					Block.removeAgent(Block.conAgents().get(i));
+				if (Chunk.conAgents().get(i).getClass() == Coin.class) {
+					Chunk.removeAgent(Chunk.conAgents().get(i));
 					score++;
 				}
 
 				//If we collide with a crawler while falling, remove it, there is 10% chance that a heart spawn
 				//otherwise take some damage and get some knockback
-				else if (Block.conAgents().get(i).getClass() == Crawler.class) {
+				else if (Chunk.conAgents().get(i).getClass() == Crawler.class) {
 					if (yv > 0 || kickTimer > 0) {
 						if (Math.random() < 0.1) {
 							Health h = new Health(0,0);
-							h.setX((int)Block.conAgents().get(i).getX());
-							h.setY((int)Block.conAgents().get(i).getY());
-							Block.getBlocks().get((int)Block.conAgents().get(i).getX()/960).getAgents().add(h);
+							h.setX((int) Chunk.conAgents().get(i).getX());
+							h.setY((int) Chunk.conAgents().get(i).getY());
+							Chunk.getChunks().get((int) Chunk.conAgents().get(i).getX()/960).getAgents().add(h);
 						}
-						Block.removeAgent(Block.conAgents().get(i));
+						Chunk.removeAgent(Chunk.conAgents().get(i));
 						yv = -1.5;
 						y-=2;
-					} else if (Block.conAgents().get(i).x + (Block.conAgents().get(i).getWidth() / 2) > x + (width / 2)){
+					} else if (Chunk.conAgents().get(i).x + (Chunk.conAgents().get(i).getWidth() / 2) > x + (width / 2)){
 						xv=-2.5;
 						yv=-1.5;
 						health--;
@@ -197,8 +197,8 @@ public class Player extends AgentObject {
 					}
 				}
 				//When we collide with a heart, we remove the heart and add 1 to the players health
-				else if (Block.conAgents().get(i).getClass() == Health.class) {
-					Block.removeAgent(Block.conAgents().get(i));
+				else if (Chunk.conAgents().get(i).getClass() == Health.class) {
+					Chunk.removeAgent(Chunk.conAgents().get(i));
 					health++;
 				}
 			}
