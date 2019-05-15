@@ -10,8 +10,8 @@ import World.WorldObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Block {
-    private static List<Block> blockList = new ArrayList<Block>();
+public class Chunk {
+    private static List<Chunk> chunkList = new ArrayList<Chunk>();
     static int gameBlockPosition;
     private List<WorldObject> worldList = new ArrayList<WorldObject>();
     private List<AgentObject> agentList = new ArrayList<AgentObject>();
@@ -22,18 +22,24 @@ public class Block {
         this.agentList = agentList;
     }
 
-    public Block() {
+    public Chunk() {
     }
 
-    public Block(List<WorldObject> wo, List<AgentObject> ao) {
+    public Chunk(List<WorldObject> wo, List<AgentObject> ao) {
         this.worldList = wo;
         this.agentList = ao;
-        blockList.add(this);
+        chunkList.add(this);
     }
 
     private List<WorldObject> generateWorld() {
         List<WorldObject> list = new ArrayList<WorldObject>();
         WorldFactory wf = new WorldFactory();
+
+        if (chunkList.size() == 0) {
+            for (int i = 9; i <= 11; i++) {
+                list.add(wf.getWorldObject('s', i, 25));
+            }
+        }
 
         for (int i = 0; i < 60 ; i++) {
             if (Randomizer.get() > 0.3) {
@@ -59,7 +65,7 @@ public class Block {
         for (int i = 0; i < worldList.size(); i++){
             if (worldList.get(i).getClass() == Grass.class) {
                 if (Randomizer.get() < 0.2) {
-                    list.add(af.getAgentObject('R', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
+                    list.add(af.getAgentObject('R', (worldList.get(i).getX()- chunkList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
                 }
             } else if (worldList.get(i).getClass() == Stone.class) {
                 emptyAbove = true;
@@ -71,7 +77,7 @@ public class Block {
                 }
 
                 if (emptyAbove) {
-                    list.add(af.getAgentObject('C', (worldList.get(i).getX()-blockList.size()*960) / 16, worldList.get(i).getY() / 16 - 4));
+                    list.add(af.getAgentObject('C', (worldList.get(i).getX()- chunkList.size()*960) / 16, worldList.get(i).getY() / 16 - 4));
                 }
             }
         }
@@ -91,8 +97,8 @@ public class Block {
         List<AgentObject> tempList = new ArrayList<>();
         for (int i = context-1; i <= context+1; i++) {
             if (i < 0 ) continue;
-            if (i >= Block.getBlocks().size()) break;
-            tempList.addAll(Block.getBlocks().get(i).getAgents());
+            if (i >= Chunk.getChunks().size()) break;
+            tempList.addAll(Chunk.getChunks().get(i).getAgents());
         }
 
         return tempList;
@@ -102,15 +108,15 @@ public class Block {
         List<WorldObject> tempList = new ArrayList<>();
         for (int i = context-1; i <= context+1; i++) {
             if (i < 0 ) continue;
-            if (i >= Block.getBlocks().size()) break;
-            tempList.addAll(Block.getBlocks().get(i).getWorld());
+            if (i >= Chunk.getChunks().size()) break;
+            tempList.addAll(Chunk.getChunks().get(i).getWorld());
         }
 
         return tempList;
     }
 
-    public static List<Block> getBlocks(){
-        return blockList;
+    public static List<Chunk> getChunks(){
+        return chunkList;
     }
 
     public static int getContext() {
@@ -118,26 +124,26 @@ public class Block {
     }
 
     public static void setContext(int context) {
-        Block.context = context;
+        Chunk.context = context;
     }
 
     public static void removeAgent(AgentObject ao) {
-        for (int i = 0; i < Block.getBlocks().size(); i++) {
-            if (Block.getBlocks().get(i).getAgents().remove(ao)) return;
+        for (int i = 0; i < Chunk.getChunks().size(); i++) {
+            if (Chunk.getChunks().get(i).getAgents().remove(ao)) return;
         }
     }
 
-    public void generateNewBlock(){
+    public void generateNewChunk(){
         Randomizer.clearData();
         long startTime = System.nanoTime();
         List <WorldObject> world = generateWorld();
         List <AgentObject> agents = generateAgents(world);
-        new Block(world, agents);
+        new Chunk(world, agents);
         long endTime = System.nanoTime();
-        dataHandeler.writeData(blockList.size()-1, Randomizer.getState(), Randomizer.getData(), endTime-startTime);
+        dataHandeler.writeData(chunkList.size()-1, Randomizer.getState(), Randomizer.getData(), endTime-startTime);
     }
 
     public static void resetBlocks(){
-        blockList = new ArrayList<Block>();
+        chunkList = new ArrayList<Chunk>();
     }
 }

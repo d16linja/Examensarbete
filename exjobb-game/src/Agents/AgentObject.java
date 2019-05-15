@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import World.WorldObject;
-import System.Block;
+import System.Chunk;
 // The abstract class for all "agents"
 
 public abstract class AgentObject {
@@ -22,7 +22,7 @@ public abstract class AgentObject {
 	// We set some values, makes x and y * 16 so that the position is relevant 
 	// to the game area where every "block" is 16*16
 	public AgentObject(int x, int y, int height, int width) {
-		this.x = x*16+(Block.getBlocks().size())*960;
+		this.x = x*16+(Chunk.getChunks().size())*960;
 		this.y = y*16;
 		this.height = height;
 		this.width = width;

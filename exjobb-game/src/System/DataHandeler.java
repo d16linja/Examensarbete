@@ -42,7 +42,8 @@ public class DataHandeler {
             writer.close();
         } catch (IOException e) {
             System.err.println(e);
-            System.out.println("Attans....");
+            System.err.println("Error writing testdata, needs manual correction at:");
+            System.err.print(file.getAbsolutePath() + "/" + state + "/" + block + ".txt");
             System.exit(0);
         }
     }
