@@ -29,7 +29,7 @@ public class Player extends AgentObject {
 
 	public Player(int x, int y) {
 		super(x, y-1, 32, 16);
-		health = 10;
+		health = 5;
 	}
 
 	// Getters and setters for methods unique for the player class

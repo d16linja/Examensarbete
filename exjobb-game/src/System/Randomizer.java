@@ -16,7 +16,6 @@ public class Randomizer {
 
     public Randomizer (State state) {
         setState(state);
-        setState(State.CRYPTO);
     }
 
     private static void setState(State state){

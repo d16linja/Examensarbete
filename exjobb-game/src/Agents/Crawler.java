@@ -17,6 +17,7 @@ public class Crawler extends AgentObject {
 	public Crawler(int x, int y) {
 		super(x, y, 16, 16);
 		xv=speed;
+		width = 15;
 	}
 
 	@Override

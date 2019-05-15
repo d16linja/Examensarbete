@@ -105,7 +105,7 @@ public abstract class AgentObject {
 		
 		if ((y < wo.getY()+(wo.getSize()-2)) &&
 			(y+height-2 > wo.getY()) && 
-			(x+width > wo.getX()) && 
+			(x+width > wo.getX()) &&
 			(x+width < wo.getX()+(wo.getSize()-2))) return 2;
 		
 		if ((y < wo.getY()+(wo.getSize()-2)) &&

@@ -16,13 +16,22 @@ public class Chunk {
     private List<WorldObject> worldList = new ArrayList<WorldObject>();
     private List<AgentObject> agentList = new ArrayList<AgentObject>();
     private static int context = 0;
-    private static DataHandeler dataHandeler = new DataHandeler();
-
+    final private static DataHandeler dataHandeler = new DataHandeler();
+    private Randomizer randomizer;
+    WorldFactory wf = new WorldFactory();
+    AgentFactory af = new AgentFactory();
     public void setAgentList(List<AgentObject> agentList) {
         this.agentList = agentList;
     }
 
     public Chunk() {
+
+        if (dataHandeler.getRuntime()%2 == 0){
+            randomizer = new Randomizer(Randomizer.State.CRYPTO);
+        }
+        else {
+            randomizer = new Randomizer(Randomizer.State.NORMAL);
+        }
     }
 
     public Chunk(List<WorldObject> wo, List<AgentObject> ao) {
@@ -31,17 +40,41 @@ public class Chunk {
         chunkList.add(this);
     }
 
+    public void addRespawnToChunk(int chunk){
+        for (int i = 9; i <= 11; i++) {
+            chunkList.get(chunk).worldList.add(wf.getWorldObject('s', i, 25));
+            chunkList.get(chunk).worldList.get(chunkList.get(chunk).worldList.size()-1).setX(i*16 + chunk * 960);
+        }
+    }
+
     private List<WorldObject> generateWorld() {
         List<WorldObject> list = new ArrayList<WorldObject>();
-        WorldFactory wf = new WorldFactory();
+
+        boolean makeHole = false, holePossible = true;
 
         if (chunkList.size() == 0) {
             for (int i = 9; i <= 11; i++) {
                 list.add(wf.getWorldObject('s', i, 25));
             }
+            for (int i = 0; i < 40; i++) {
+                list.add(wf.getWorldObject('s', 0, i));
+            }
         }
 
         for (int i = 0; i < 60 ; i++) {
+            if (chunkList.size() == 0 && i == 0) continue;
+
+            if ((Randomizer.get() > 0.95 || makeHole) && holePossible) {
+                if (makeHole) {
+                    makeHole = false;
+                    holePossible = false;
+                    continue;
+                } else {
+                    makeHole = true;
+                    continue;
+                }
+            }
+
             if (Randomizer.get() > 0.3) {
                 list.add(wf.getWorldObject('g', i, 39));
             } else {
@@ -52,6 +85,8 @@ public class Chunk {
                     k++;
                 }
             }
+
+            holePossible = true;
         }
 
         return list;
@@ -59,12 +94,11 @@ public class Chunk {
 
     private List<AgentObject> generateAgents(List<WorldObject> worldList) {
         List<AgentObject> list = new ArrayList<AgentObject>();
-        AgentFactory af = new AgentFactory();
         boolean emptyAbove;
 
         for (int i = 0; i < worldList.size(); i++){
             if (worldList.get(i).getClass() == Grass.class) {
-                if (Randomizer.get() < 0.2) {
+                if (Randomizer.get() < 0.1) {
                     list.add(af.getAgentObject('R', (worldList.get(i).getX()- chunkList.size()*960) / 16, worldList.get(i).getY() / 16 - 1));
                 }
             } else if (worldList.get(i).getClass() == Stone.class) {
@@ -76,7 +110,7 @@ public class Chunk {
                     }
                 }
 
-                if (emptyAbove) {
+                if (emptyAbove && Randomizer.get() < 0.5) {
                     list.add(af.getAgentObject('C', (worldList.get(i).getX()- chunkList.size()*960) / 16, worldList.get(i).getY() / 16 - 4));
                 }
             }
@@ -143,7 +177,7 @@ public class Chunk {
         dataHandeler.writeData(chunkList.size()-1, Randomizer.getState(), Randomizer.getData(), endTime-startTime);
     }
 
-    public static void resetBlocks(){
+    public static void resetChunks(){
         chunkList = new ArrayList<Chunk>();
     }
 }

@@ -23,27 +23,26 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private Player player;
     private int coinCount = 0;
     private double cameraPan = 0;
-    private Randomizer randomizer;
-    private long testRuntime = 30000;
-    private long countdownTime = 5000;
-    private long startTime, stopTime, timeLeft;
-
+    private int runNr = 0;
+	private long testRuntime = 30000;
+	private long countdownTime = 5000;
+	private long startTime, stopTime, timeLeft;
+    
     // Creates all the necessary objects for the Game
     public Main() {
     	Resources.loadResources();
-    	randomizer = new Randomizer(Randomizer.State.CRYPTO);
         chunk = new Chunk();
 		startTime = System.currentTimeMillis();
 		stopTime = startTime + testRuntime + countdownTime;
 		timeLeft = stopTime - System.currentTimeMillis();
 		player = new Player(10, 10);
+		cameraPan = Chunk.getContext()*960;
 
 		for (int i = 0; i < 3; i++) {
 			chunk.generateNewChunk();
 		}
-
-
-		// Get the players spawn point and remove the object from the list of objects
+        
+    	// Get the players spawn point and remove the object from the list of objects
         // Also count all the coins so that we can compare it to the score later
     	for (int i = 0; i < chunk.getAgents().size(); i++) {
     		if (chunk.getAgents().get(i).getClass() == player.getClass()) {
@@ -75,8 +74,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
     public void paint(Graphics g) {
         super.paint(g);
 
-		if (((player.getX() - cameraPan) < 475) || (player.getX() - cameraPan) > 485) {
-			cameraPan += 0.02 * (player.getX() - cameraPan - 480);
+		if ((player.getX() - cameraPan) > 485) {
+			cameraPan += 0.01 * (player.getX() - cameraPan - 480);
 		}
 
         g2d = (Graphics2D) g;
@@ -106,6 +105,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 				g2d.setColor(Color.RED);
 				timeString = "" + TimeUnit.MILLISECONDS.toSeconds(timeLeft - testRuntime);
 			} else {
+				cameraPan+=0.5;
 				switch (Randomizer.getState()) {
 					case NORMAL:
 						g2d.setColor(Color.GREEN);
@@ -135,20 +135,31 @@ public class Main extends JPanel implements Runnable, KeyListener {
 //        }
 //
         
-        g2d.drawImage(player.getImg(),(int) (player.getX()-cameraPan),(int) player.getY(), null);
+        g2d.drawImage(player.getImg(),(int) (player.getX()- (int) cameraPan),(int) player.getY(), null);
 
 
         
     }
 
     public void restart(){
-    	if (Randomizer.getState() == Randomizer.State.NORMAL) {
+    	if (runNr >= 1) {
+			System.out.println("Bye!");
     		System.exit(0);
 		}
+    	runNr++;
 		Randomizer.changeState();
-		Chunk.resetBlocks();
+		Chunk.resetChunks();
 		player = new Player(10, 10);
 		cameraPan = 0;
+	}
+
+	public void respawn() {
+    	player = new Player(10,10);
+    	player.setX(Chunk.getContext()*960+160);
+    	chunk.addRespawnToChunk(Chunk.getContext());
+    	testRuntime = timeLeft;
+    	stopTime += countdownTime;
+    	cameraPan = Chunk.getContext()*960;
 	}
     
     // Runs the game loop
@@ -158,6 +169,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 			if (timeLeft <= 0) {
 				restart();
 				startTime = System.currentTimeMillis();
+				testRuntime = 30000;
 				stopTime = startTime + testRuntime + countdownTime;
 				timeLeft = stopTime - System.currentTimeMillis();
 			}
@@ -182,9 +194,8 @@ public class Main extends JPanel implements Runnable, KeyListener {
             	a.update();
             }
             player.update();
-            if(player.getHealth()<=0) {
-            	player.setX(-100);
-            	player.setHealth(100);
+            if(player.getHealth()<=0 || player.getY() > 640 || player.getX() < cameraPan) {
+ 				respawn();
             }
             repaint();
         }		
