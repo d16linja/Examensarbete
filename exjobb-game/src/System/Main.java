@@ -24,7 +24,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
     private int coinCount = 0;
     private double cameraPan = 0;
     private int runNr = 0;
-	private long testRuntime = 30000;
+	private long testRuntime = 60000 * 3;
 	private long countdownTime = 5000;
 	private long startTime, stopTime, timeLeft;
     
@@ -84,11 +84,11 @@ public class Main extends JPanel implements Runnable, KeyListener {
 
         if (Chunk.getChunks().size() > 0) {
 			for (int i = 0; i < Chunk.conWorld().size(); i++) {
-				g2d.drawImage(Chunk.conWorld().get(i).getImg(),(int) (Chunk.conWorld().get(i).getX()-cameraPan), Chunk.conWorld().get(i).getY(), null);
+				g2d.drawImage(Chunk.conWorld().get(i).getImg(),(Chunk.conWorld().get(i).getX()-((int)cameraPan)), Chunk.conWorld().get(i).getY(), null);
 			}
 
 			for (int i = 0; i < Chunk.conAgents().size(); i++) {
-				g2d.drawImage(Chunk.conAgents().get(i).getImg(),(int) (Chunk.conAgents().get(i).getX()-cameraPan),(int) Chunk.conAgents().get(i).getY(), null);
+				g2d.drawImage(Chunk.conAgents().get(i).getImg(),(int) (Chunk.conAgents().get(i).getX()-((int)cameraPan)),(int) Chunk.conAgents().get(i).getY(), null);
 			}
 
 			for (int i = 0; i < player.getHealth(); i++) {
@@ -135,7 +135,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 //        }
 //
         
-        g2d.drawImage(player.getImg(),(int) (player.getX()- (int) cameraPan),(int) player.getY(), null);
+        g2d.drawImage(player.getImg(),(int) (player.getX() - cameraPan),(int) player.getY(), null);
 
 
         
@@ -169,7 +169,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 			if (timeLeft <= 0) {
 				restart();
 				startTime = System.currentTimeMillis();
-				testRuntime = 30000;
+				testRuntime = 60000 * 3;
 				stopTime = startTime + testRuntime + countdownTime;
 				timeLeft = stopTime - System.currentTimeMillis();
 			}
@@ -230,7 +230,7 @@ public class Main extends JPanel implements Runnable, KeyListener {
 			}
 
 			if (e.getKeyCode() == 27) {
-				System.exit(0);
+				// System.exit(0);
 			}
 		}
 	}
